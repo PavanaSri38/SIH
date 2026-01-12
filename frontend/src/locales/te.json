@@ -168,7 +168,7 @@
     "characteristics": "లక్షణాలు"
   },
   "weather": {
-    "title": "ఆంధ్రప్రదేశ్ వాతావరణం",
+    "title": "అఖిల భారత వాతావరణం",
     "liveFor": "{{district}} కోసం లైవ్ వాతావరణం",
     "liveBadge": "● లైవ్",
     "humidity": "మంచు",
@@ -179,8 +179,10 @@
   },
   "market": {
     "title": "మార్కెట్ ధరలు",
-    "subtitleSeason": "ఆంధ్రప్రదేశ్ మార్కెట్ రేట్లు — {{state}} కోసం {{season}} సీజన్",
-    "subtitleDefault": "ఆంధ్రప్రదేశ్ మండి ధరలు మరియు ధోరణులు",
+    "selectState": "రాష్ట్రం ఎంచుకోండి",
+    "selectCity": "నగరం ఎంచుకోండి",
+    "subtitleSeason": "మార్కెట్ రేట్లు — {{state}} కోసం {{season}} సీజన్",
+    "subtitleDefault": "అఖిల భారత మండి ధరలు మరియు ధోరణులు",
     "seasonCrops": "{{season}} సీజన్ పంటలు — {{state}}",
     "viewDetails": "వివరాలు చూడండి",
     "searchAnyCrop": "ఏ పంటైనా వెతకండి",

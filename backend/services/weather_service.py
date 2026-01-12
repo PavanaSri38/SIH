@@ -1,5 +1,5 @@
 """
-Weather service - Andhra Pradesh focused.
+Weather service - All India.
 Uses Open-Meteo API (free, no API key required) for live weather.
 """
 import requests
@@ -8,17 +8,17 @@ from datetime import datetime, timedelta
 
 settings = get_settings()
 
-# Andhra Pradesh: location to city for weather (Open-Meteo geocoding)
-# When user enters "Andhra Pradesh" or AP district, resolve to nearest major city
-AP_WEATHER_CITIES = {
+# Location aliases for geocoding (Open-Meteo)
+LOCATION_ALIASES = {
     "andhra pradesh": "Vijayawada", "andhra": "Vijayawada", "ap": "Vijayawada",
     "vijayawada": "Vijayawada", "vizag": "Visakhapatnam", "visakhapatnam": "Visakhapatnam",
     "guntur": "Guntur", "kurnool": "Kurnool", "nellore": "Nellore",
     "rajahmundry": "Rajahmundry", "tirupati": "Tirupati", "kadapa": "Kadapa",
     "anantapur": "Anantapur", "eluru": "Eluru", "ongole": "Ongole",
     "kakinada": "Kakinada", "vizianagaram": "Vizianagaram", "srikakulam": "Srikakulam",
+    "bangalore": "Bengaluru", "bengaluru": "Bengaluru", "madras": "Chennai",
 }
-DEFAULT_WEATHER_CITY = "Vijayawada"  # Andhra Pradesh capital region
+DEFAULT_WEATHER_CITY = "Vijayawada"
 
 # Open-Meteo WMO weather code to description mapping
 WEATHER_CODES = {
@@ -58,12 +58,29 @@ class WeatherService:
     def __init__(self):
         self.openweather_api_key = getattr(settings, "openweather_api_key", "") or ""
 
+    def _resolve_to_city(self, location: str) -> str:
+        """Resolve state name to first city for geocoding."""
+        try:
+            from services.market_price_service import get_all_states, get_cities_for_state
+            loc = (location or "").strip()
+            if not loc:
+                return DEFAULT_WEATHER_CITY
+            states = get_all_states()
+            for s in states:
+                if s.lower() == loc.lower():
+                    cities = get_cities_for_state(s)
+                    return cities[0] if cities else loc
+        except Exception:
+            pass
+        return location or DEFAULT_WEATHER_CITY
+
     def _geocode(self, city: str) -> tuple:
-        """Convert city/state name to lat, lon. Andhra Pradesh focused."""
+        """Convert city/state name to lat, lon. Supports all Indian cities."""
         if not city or not city.strip():
             city = DEFAULT_WEATHER_CITY
+        city = self._resolve_to_city(city)
         loc = city.strip().lower()
-        search_city = AP_WEATHER_CITIES.get(loc, city)
+        search_city = LOCATION_ALIASES.get(loc, city)
         try:
             r = requests.get(
                 self.OPEN_METEO_GEO,

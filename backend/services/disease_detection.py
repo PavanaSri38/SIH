@@ -5,9 +5,14 @@ Model: Daksh159/plant-disease-mobilenetv2
             Raspberry, Soybean, Squash, Strawberry, Tomato (healthy + diseases)
 """
 import json
+import logging
 from pathlib import Path
 from typing import Tuple, Dict, Optional
 import io
+
+from services.leaf_validator import is_leaf_image
+
+logger = logging.getLogger(__name__)
 
 # Base path for model files (backend/ml_models/plant_disease)
 MODEL_DIR = Path(__file__).parent.parent / "ml_models" / "plant_disease"
@@ -143,11 +148,47 @@ disease_model = DiseaseDetectionModel()
 def detect_disease(image_bytes: bytes) -> dict:
     """
     Detect disease from image bytes.
-    Returns dict with crop_name, disease_name, confidence, is_healthy, all_predictions.
+
+    Pipeline:
+      1. Leaf validation  — rejects non-leaf / blurry images early
+      2. Disease inference — MobileNetV2 predicts disease class
+
+    Returns dict with:
+      Normal path  → crop_name, disease_name, confidence, is_healthy, all_predictions
+      Failure path → success=False, error code, message
     """
+    # ── Step 1: Convert bytes → PIL for validator ──────────────────────
+    try:
+        from PIL import Image
+        pil_image = Image.open(io.BytesIO(image_bytes))
+    except Exception as e:
+        logger.warning(f"[DISEASE] Cannot decode image bytes: {e}")
+        return {
+            "success": False,
+            "error": "INVALID_IMAGE",
+            "message": "The uploaded file could not be read as an image. Please upload a valid image file."
+        }
+
+    # ── Step 2: Leaf validation ────────────────────────────────────────
+    try:
+        if not is_leaf_image(pil_image):
+            return {
+                "success": False,
+                "error": "INVALID_IMAGE",
+                "message": "Please upload a valid leaf image for disease detection."
+            }
+    except ValueError as e:
+        return {
+            "success": False,
+            "error": "UNCLEAR_IMAGE",
+            "message": str(e)
+        }
+
+    # ── Step 3: Disease inference via existing MobileNetV2 model ───────
     crop_name, disease_name, confidence, all_predictions = disease_model.predict(image_bytes)
     is_healthy = "healthy" in disease_name.lower()
     return {
+        "success": True,
         "crop_name": crop_name,
         "disease_name": disease_name,
         "confidence": confidence,

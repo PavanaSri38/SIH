@@ -17,8 +17,38 @@ function MarketPrices({ user, onLogout, onUserUpdate }) {
   const [loading, setLoading] = useState(false)
   const [seasonLoading, setSeasonLoading] = useState(true)
 
-  const [district, setDistrict] = useState(user?.location || 'Andhra Pradesh')
-  const location = district || 'Andhra Pradesh'
+  const [states, setStates] = useState(['Andhra Pradesh'])
+  const [cities, setCities] = useState([])
+  const [selectedState, setSelectedState] = useState('Andhra Pradesh')
+  const [selectedCity, setSelectedCity] = useState('')
+  const [citiesLoading, setCitiesLoading] = useState(false)
+
+  const location = selectedCity || selectedState || 'Andhra Pradesh'
+
+  useEffect(() => {
+    axios.get('/api/market/states')
+      .then(res => {
+        const list = res.data?.states || []
+        if (list.length) setStates(list)
+      })
+      .catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    if (!selectedState) {
+      setCities([])
+      setSelectedCity('')
+      return
+    }
+    setCitiesLoading(true)
+    setSelectedCity('')
+    axios.get(`/api/market/cities/${encodeURIComponent(selectedState)}`)
+      .then(res => {
+        setCities(res.data?.cities || [])
+      })
+      .catch(() => setCities([]))
+      .finally(() => setCitiesLoading(false))
+  }, [selectedState])
 
   useEffect(() => {
     if (!location) return
@@ -55,16 +85,32 @@ function MarketPrices({ user, onLogout, onUserUpdate }) {
                 ? t('market.subtitleSeason', { season: seasonData.season, state: seasonData.state })
                 : t('market.subtitleDefault')}
             </p>
-            <select className="form-select" style={{ maxWidth: 220, marginTop: 'var(--space-2)' }} value={district} onChange={e => setDistrict(e.target.value)}>
-              <option value="Andhra Pradesh">Andhra Pradesh</option>
-              <option value="Vijayawada">Vijayawada</option>
-              <option value="Guntur">Guntur</option>
-              <option value="Visakhapatnam">Visakhapatnam</option>
-              <option value="Kurnool">Kurnool</option>
-              <option value="Nellore">Nellore</option>
-              <option value="Rajahmundry">Rajahmundry</option>
-              <option value="Kakinada">Kakinada</option>
-            </select>
+            <div className="market-location-select" style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)', marginTop: 'var(--space-2)', alignItems: 'center' }}>
+              <div>
+                <label className="param-label" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>{t('market.selectState')}</label>
+                <select
+                  className="form-select"
+                  style={{ minWidth: 200 }}
+                  value={selectedState}
+                  onChange={e => setSelectedState(e.target.value)}
+                >
+                  {states.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="param-label" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>{t('market.selectCity')}</label>
+                <select
+                  className="form-select"
+                  style={{ minWidth: 200 }}
+                  value={selectedCity}
+                  onChange={e => setSelectedCity(e.target.value)}
+                  disabled={!selectedState || citiesLoading}
+                >
+                  <option value="">{citiesLoading ? (t('soilType.loading') || 'Loading...') : t('market.selectCity')}</option>
+                  {cities.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+            </div>
           </div>
 
           <div className="feature-content">

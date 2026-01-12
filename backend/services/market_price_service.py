@@ -1,5 +1,5 @@
 """
-Market price service - Andhra Pradesh focused.
+Market price service - All Indian states.
 Season and location aware crop prices. Uses data.gov.in API when key is set.
 """
 import json
@@ -11,41 +11,61 @@ from config import get_settings
 
 settings = get_settings()
 
-# Default state: Andhra Pradesh (app is AP-focused)
+# Default state: Andhra Pradesh
 DEFAULT_STATE = "Andhra Pradesh"
 
-# Andhra Pradesh districts/cities
-AP_LOCATIONS = {
-    "vijayawada": "Andhra Pradesh", "visakhapatnam": "Andhra Pradesh", "vizag": "Andhra Pradesh",
-    "guntur": "Andhra Pradesh", "kurnool": "Andhra Pradesh", "nellore": "Andhra Pradesh",
-    "rajahmundry": "Andhra Pradesh", "tirupati": "Andhra Pradesh", "kadapa": "Andhra Pradesh",
-    "anantapur": "Andhra Pradesh", "eluru": "Andhra Pradesh", "ongole": "Andhra Pradesh",
-    "kakinada": "Andhra Pradesh", "adoni": "Andhra Pradesh", "anakapalli": "Andhra Pradesh",
-    "vizianagaram": "Andhra Pradesh", "srikakulam": "Andhra Pradesh", "chittoor": "Andhra Pradesh",
-    "andhra": "Andhra Pradesh", "andhra pradesh": "Andhra Pradesh", "ap": "Andhra Pradesh",
-}
+# Load states and cities from JSON (all Indian states with mandi cities)
+_STATES_CITIES: Dict[str, List[str]] = {}
+_LOCATION_TO_STATE: Dict[str, str] = {}
 
-# AP-specific mandis/markets (for fallback price display)
+def _load_states_cities() -> Dict[str, List[str]]:
+    """Load states and cities from india_states_cities.json."""
+    global _STATES_CITIES, _LOCATION_TO_STATE
+    if _STATES_CITIES:
+        return _STATES_CITIES
+    data_file = Path(__file__).parent.parent / "data" / "india_states_cities.json"
+    try:
+        with open(data_file, "r", encoding="utf-8") as f:
+            _STATES_CITIES = json.load(f)
+        # Build city -> state lookup
+        for state, cities in _STATES_CITIES.items():
+            _LOCATION_TO_STATE[state.lower()] = state
+            for city in cities:
+                _LOCATION_TO_STATE[city.lower()] = state
+        return _STATES_CITIES
+    except Exception:
+        _STATES_CITIES = {"Andhra Pradesh": ["Vijayawada", "Guntur", "Visakhapatnam", "Kurnool", "Nellore"]}
+        return _STATES_CITIES
+
+
+def get_all_states() -> List[str]:
+    """Return list of all Indian states/UTs with market data."""
+    data = _load_states_cities()
+    return sorted(data.keys())
+
+
+def get_cities_for_state(state: str) -> List[str]:
+    """Return list of cities/mandis for a given state."""
+    data = _load_states_cities()
+    return data.get(state, [])
+
+
+# AP-specific mandis (for fallback when state is Andhra Pradesh)
 AP_MARKETS = [
     "Guntur Chilli Yard", "Vijayawada Rythu Bazar", "Kurnool APMC", "Rajahmundry Mandi",
     "Visakhapatnam Market", "Tirupati APMC", "Nellore Mandi", "Kakinada Port Market",
     "Anantapur APMC", "Eluru Rythu Bazar", "Ongole Groundnut Yard",
 ]
 
-# City/region to state mapping (India) - AP locations first
-LOCATION_TO_STATE = {
-    **AP_LOCATIONS,
-    "mumbai": "Maharashtra", "pune": "Maharashtra", "nagpur": "Maharashtra",
-    "delhi": "NCT of Delhi", "bangalore": "Karnataka", "bengaluru": "Karnataka",
-    "chennai": "Tamil Nadu", "madras": "Tamil Nadu",
-    "hyderabad": "Telangana", "kolkata": "West Bengal", "calcutta": "West Bengal",
-    "ahmedabad": "Gujarat", "surat": "Gujarat", "vadodara": "Gujarat",
-    "jaipur": "Rajasthan", "lucknow": "Uttar Pradesh", "kanpur": "Uttar Pradesh",
-    "chandigarh": "Punjab", "ludhiana": "Punjab", "amritsar": "Punjab",
-    "patna": "Bihar", "indore": "Madhya Pradesh", "bhopal": "Madhya Pradesh",
-    "bhubaneswar": "Odisha", "coimbatore": "Tamil Nadu", "kochi": "Kerala",
-    "thiruvananthapuram": "Kerala",
-}
+
+def _get_markets_for_state(state: str) -> List[str]:
+    """Get mandi/market names for fallback prices in a state."""
+    if state == "Andhra Pradesh":
+        return AP_MARKETS
+    cities = get_cities_for_state(state)
+    if cities:
+        return [f"{c} APMC" for c in cities[:8]] + [f"{c} Mandi" for c in cities[:4]]
+    return ["APMC Market", "Mandi", "Rythu Bazar", "Local Market"]
 
 # India crop seasons by month (1=Jan, 2=Feb, ...)
 # Kharif: Jun-Oct (6-10), Rabi: Nov-Mar (11,12,1,2,3), Summer: Apr-May (4,5)
@@ -62,22 +82,18 @@ def _resolve_state(location: str) -> str:
     """Resolve user location (city/state) to state name. Default: Andhra Pradesh."""
     if not location or not location.strip():
         return DEFAULT_STATE
+    _load_states_cities()  # Ensure lookup is built
     loc = location.strip().lower()
-    if loc in LOCATION_TO_STATE:
-        return LOCATION_TO_STATE[loc]
-    for city, state in LOCATION_TO_STATE.items():
+    if loc in _LOCATION_TO_STATE:
+        return _LOCATION_TO_STATE[loc]
+    for city, state in _LOCATION_TO_STATE.items():
         if city in loc or loc in city:
             return state
-    # Check if it's already a state (from crops.json)
-    states = [
-        "Punjab", "Haryana", "Maharashtra", "Gujarat", "Andhra Pradesh",
-        "Karnataka", "Tamil Nadu", "West Bengal", "Uttar Pradesh", "Madhya Pradesh",
-        "Rajasthan", "Telangana", "Bihar", "Kerala", "Odisha"
-    ]
-    for s in states:
-        if s.lower() in loc or loc in s.lower():
-            return s
-    return DEFAULT_STATE  # default: Andhra Pradesh
+    # Check if it's already a state from our list
+    for state in get_all_states():
+        if state.lower() == loc or state.lower() in loc or loc in state.lower():
+            return state
+    return DEFAULT_STATE
 
 
 def get_season_crops_for_location(location: str) -> List[Dict]:
@@ -165,7 +181,7 @@ def _fetch_from_datagov(commodity: str, state: str) -> Optional[List[Dict]]:
 def _generate_fallback_prices(crop_name: str, state: str) -> List[Dict]:
     """Generate realistic fallback prices when API unavailable."""
     base_range = CROP_BASE_PRICES.get(crop_name, (1500, 3000))
-    markets = AP_MARKETS if state == "Andhra Pradesh" else ["APMC Market", "Mandi", "Rythu Bazar", "Local Market"]
+    markets = _get_markets_for_state(state)
     prices = []
     import random
     for i in range(30):

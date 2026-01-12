@@ -168,7 +168,7 @@
     "characteristics": "विशेषताएं"
   },
   "weather": {
-    "title": "आंध्र प्रदेश मौसम",
+    "title": "पूरे भारत मौसम",
     "liveFor": "{{district}} के लिए लाइव मौसम",
     "liveBadge": "● लाइव",
     "humidity": "नमी",
@@ -179,8 +179,10 @@
   },
   "market": {
     "title": "बाजार कीमतें",
-    "subtitleSeason": "आंध्र प्रदेश बाजार दरें — {{state}} के लिए {{season}} सीज़न",
-    "subtitleDefault": "आंध्र प्रदेश मंडी कीमतें और रुझान",
+    "selectState": "राज्य चुनें",
+    "selectCity": "शहर चुनें",
+    "subtitleSeason": "बाजार दरें — {{state}} के लिए {{season}} सीज़न",
+    "subtitleDefault": "पूरे भारत मंडी कीमतें और रुझान",
     "seasonCrops": "{{season}} सीज़न फसलें — {{state}}",
     "viewDetails": "विवरण देखें",
     "searchAnyCrop": "कोई भी फसल खोजें",

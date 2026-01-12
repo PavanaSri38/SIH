@@ -40,6 +40,14 @@ async def detect_crop_disease(
         # Detect disease using pretrained model
         detection_result = detect_disease(image_bytes)
         
+        if not detection_result.get("success", True):
+            from fastapi.responses import JSONResponse
+            return JSONResponse(status_code=400, content={
+                "success": False,
+                "error": detection_result.get("error", "INVALID_IMAGE"),
+                "message": detection_result.get("message", "Please upload a valid leaf image for disease detection.")
+            })
+        
         # Get user (for language and email)
         uid = int(user_id) if user_id and str(user_id).isdigit() else None
         user = db.query(User).filter(User.id == uid).first() if uid else None

@@ -168,7 +168,7 @@
     "characteristics": "Characteristics"
   },
   "weather": {
-    "title": "Andhra Pradesh Weather",
+    "title": "All India Weather",
     "liveFor": "Live weather for {{district}}",
     "liveBadge": "● Live",
     "humidity": "Humidity",
@@ -179,8 +179,10 @@
   },
   "market": {
     "title": "Market Prices",
-    "subtitleSeason": "Andhra Pradesh market rates — {{season}} season for {{state}}",
-    "subtitleDefault": "Andhra Pradesh mandi prices & trends",
+    "selectState": "Select State",
+    "selectCity": "Select City",
+    "subtitleSeason": "Market rates — {{season}} season for {{state}}",
+    "subtitleDefault": "All India mandi prices & trends",
     "seasonCrops": "{{season}} Season Crops — {{state}}",
     "viewDetails": "View details",
     "searchAnyCrop": "Search any crop",

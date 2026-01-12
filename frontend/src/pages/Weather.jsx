@@ -7,22 +7,51 @@ import AppLayout from '../components/AppLayout'
 import { FiArrowLeft } from 'react-icons/fi'
 import './FeaturePage.css'
 
-const AP_DISTRICTS = ['Vijayawada', 'Visakhapatnam', 'Guntur', 'Kurnool', 'Nellore', 'Rajahmundry', 'Tirupati', 'Kakinada', 'Anantapur', 'Eluru', 'Ongole', 'Kadapa', 'Andhra Pradesh']
-
 function Weather({ user, onLogout, onUserUpdate }) {
   const { t } = useTranslation()
   const [weather, setWeather] = useState(null)
   const [alerts, setAlerts] = useState([])
   const [loading, setLoading] = useState(true)
-  const [district, setDistrict] = useState(user?.location || 'Andhra Pradesh')
+
+  const [states, setStates] = useState(['Andhra Pradesh'])
+  const [cities, setCities] = useState([])
+  const [selectedState, setSelectedState] = useState('Andhra Pradesh')
+  const [selectedCity, setSelectedCity] = useState('')
+  const [citiesLoading, setCitiesLoading] = useState(false)
+
+  const location = selectedCity || (cities.length > 0 ? cities[0] : selectedState)
 
   useEffect(() => {
-    const loc = district || 'Andhra Pradesh'
+    axios.get('/api/market/states')
+      .then(res => {
+        const list = res.data?.states || []
+        if (list.length) setStates(list)
+      })
+      .catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    if (!selectedState) {
+      setCities([])
+      setSelectedCity('')
+      return
+    }
+    setCitiesLoading(true)
+    setSelectedCity('')
+    axios.get(`/api/market/cities/${encodeURIComponent(selectedState)}`)
+      .then(res => setCities(res.data?.cities || []))
+      .catch(() => setCities([]))
+      .finally(() => setCitiesLoading(false))
+  }, [selectedState])
+
+  useEffect(() => {
+    if (!location) return
     const load = async () => {
+      setLoading(true)
       try {
         const [wRes, syncRes] = await Promise.all([
-          axios.post('/api/weather/current', { location: loc }),
-          axios.post('/api/weather/sync-alerts', { user_id: user.id, location: loc }).catch(() => ({ data: { alerts: [] } }))
+          axios.post('/api/weather/current', { location }),
+          axios.post('/api/weather/sync-alerts', { user_id: user.id, location }).catch(() => ({ data: { alerts: [] } }))
         ])
         setWeather(wRes.data)
         setAlerts(syncRes.data?.alerts || [])
@@ -33,9 +62,9 @@ function Weather({ user, onLogout, onUserUpdate }) {
       }
     }
     load()
-  }, [district, user.location, user.id])
+  }, [location, user.id])
 
-  if (loading) {
+  if (loading && !weather) {
     return (
       <AppLayout user={user} onLogout={onLogout} onUserUpdate={onUserUpdate}>
         <div className="loading-state"><div className="spinner" /></div>
@@ -51,12 +80,35 @@ function Weather({ user, onLogout, onUserUpdate }) {
           <div className="page-header">
             <h1 className="page-title">{t('weather.title')}</h1>
             <p className="page-subtitle">
-              {t('weather.liveFor', { district })}
+              {t('weather.liveFor', { district: location })}
               <span className="live-badge" title="Real-time data from Open-Meteo"> {t('weather.liveBadge')}</span>
             </p>
-            <select className="form-select" style={{ maxWidth: 220, marginTop: 'var(--space-2)' }} value={district} onChange={e => setDistrict(e.target.value)}>
-              {AP_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
-            </select>
+            <div className="weather-location-select" style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)', marginTop: 'var(--space-2)', alignItems: 'center' }}>
+              <div>
+                <label className="param-label" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>{t('market.selectState')}</label>
+                <select
+                  className="form-select"
+                  style={{ minWidth: 200 }}
+                  value={selectedState}
+                  onChange={e => setSelectedState(e.target.value)}
+                >
+                  {states.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="param-label" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>{t('market.selectCity')}</label>
+                <select
+                  className="form-select"
+                  style={{ minWidth: 200 }}
+                  value={selectedCity}
+                  onChange={e => setSelectedCity(e.target.value)}
+                  disabled={!selectedState || citiesLoading}
+                >
+                  <option value="">{citiesLoading ? (t('soilType.loading') || 'Loading...') : t('weather.selectCity')}</option>
+                  {cities.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+            </div>
           </div>
 
           <div className="feature-content">

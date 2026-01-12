@@ -8,6 +8,8 @@ from services.market_price_service import (
     get_crop_prices_for_location,
     get_current_season,
     get_season_crops_for_location,
+    get_all_states,
+    get_cities_for_state,
 )
 from datetime import datetime, timedelta
 from typing import List
@@ -77,17 +79,16 @@ def get_crop_prices(
 
 
 @router.get("/states")
-def get_states(db: Session = Depends(get_db)):
-    """Get list of states with price data (from DB or default list)."""
-    states = db.query(MarketPrice.state).distinct().all()
-    if states:
-        return {"states": [s[0] for s in states]}
-    return {
-        "states": [
-            "Punjab", "Haryana", "Maharashtra", "Gujarat", "Andhra Pradesh",
-            "Karnataka", "Tamil Nadu", "West Bengal", "Uttar Pradesh", "Madhya Pradesh",
-        ]
-    }
+def get_states_list():
+    """Get list of all Indian states/UTs with market data."""
+    return {"states": get_all_states()}
+
+
+@router.get("/cities/{state}")
+def get_cities(state: str):
+    """Get list of cities/mandis for a given state."""
+    cities = get_cities_for_state(state)
+    return {"state": state, "cities": cities}
 
 
 @router.post("/seed-mock-data")

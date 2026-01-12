@@ -168,7 +168,7 @@
     "characteristics": "લક્ષણો"
   },
   "weather": {
-    "title": "આંધ્ર પ્રદેશ હવામાન",
+    "title": "આખા ભારત હવામાન",
     "liveFor": "{{district}} માટે લાઇવ હવામાન",
     "liveBadge": "● લાઇવ",
     "humidity": "આર્દ્રતા",
@@ -179,8 +179,10 @@
   },
   "market": {
     "title": "બજાર ભાવ",
-    "subtitleSeason": "આંધ્ર પ્રદેશ બજાર દર — {{state}} માટે {{season}} સીઝન",
-    "subtitleDefault": "આંધ્ર પ્રદેશ મંડી ભાવ અને ટ્રેન્ડ",
+    "selectState": "રાજ્ય પસંદ કરો",
+    "selectCity": "શહેર પસંદ કરો",
+    "subtitleSeason": "બજાર દર — {{state}} માટે {{season}} સીઝન",
+    "subtitleDefault": "આખા ભારત મંડી ભાવ અને ટ્રેન્ડ",
     "seasonCrops": "{{season}} સીઝન પાક — {{state}}",
     "viewDetails": "વિગતો જુઓ",
     "searchAnyCrop": "કોઈ પણ પાક શોધો",

@@ -168,7 +168,7 @@
     "characteristics": "பண்புகள்"
   },
   "weather": {
-    "title": "ஆந்திரப் பிரதேச காலநிலை",
+    "title": "அனைத்து இந்தியா காலநிலை",
     "liveFor": "{{district}} க்கான நேரடி காலநிலை",
     "liveBadge": "● நேரடி",
     "humidity": "ஈரப்பதம்",
@@ -179,8 +179,10 @@
   },
   "market": {
     "title": "சந்தை விலைகள்",
-    "subtitleSeason": "ஆந்திரப் பிரதேச சந்தை விகிதங்கள் — {{state}} க்கான {{season}} பருவம்",
-    "subtitleDefault": "ஆந்திரப் பிரதேச மண்டி விலைகள் மற்றும் போக்குகள்",
+    "selectState": "மாநிலம் தேர்ந்தெடு",
+    "selectCity": "நகரம் தேர்ந்தெடு",
+    "subtitleSeason": "சந்தை விகிதங்கள் — {{state}} க்கான {{season}} பருவம்",
+    "subtitleDefault": "முழு இந்தியா மண்டி விலைகள் மற்றும் போக்குகள்",
     "seasonCrops": "{{season}} பருவ பயிர்கள் — {{state}}",
     "viewDetails": "விவரங்களைப் பார்க்க",
     "searchAnyCrop": "எந்த பயிரையும் தேடுங்கள்",

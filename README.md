@@ -131,3 +131,8 @@ The system includes built-in optimizations to reduce Gemini API usage:
 | `stop.bat` | Stop all servers |
 | `diagnose.bat` | Check Python, Node, ports, and project structure |
 | `start-debug.bat` | Start with full diagnostic checks |
+
+
+
+
+#
