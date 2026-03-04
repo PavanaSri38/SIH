@@ -10,5 +10,5 @@ requests==2.32.3
 email-validator
 pillow
 numpy
-torch
-torchvision
+torch==2.2.0
+torchvision==0.17.0
