@@ -1,0 +1,14 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+sqlalchemy==2.0.35
+pydantic-settings==2.5.2
+python-dotenv==1.0.1
+google-genai==0.8.0
+torch==2.4.1
+torchvision==0.19.1
+Pillow==10.4.0
+numpy==1.26.4
+requests==2.32.3
+sendgrid==6.11.0
+twilio==9.3.5
+python-multipart==0.0.12

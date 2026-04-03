@@ -1,0 +1,14 @@
+{
+  "dashboard": "డ్యాష్‌బోర్డ్",
+  "soil_analysis": "నేల విశ్లేషణ",
+  "crop_recommendation": "పంట సిఫారసు",
+  "disease_detection": "వ్యాధి గుర్తింపు",
+  "weather": "వాతావరణం & హెచ్చరికలు",
+  "market_prices": "మార్కెట్ ధరలు",
+  "login": "లాగిన్",
+  "register": "నమోదు",
+  "logout": "లాగ్అవుట్",
+  "analyse": "నేల విశ్లేషించండి",
+  "detecting": "గుర్తిస్తున్నారు...",
+  "loading": "లోడవుతోంది..."
+}

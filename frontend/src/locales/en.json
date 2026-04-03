@@ -1,0 +1,14 @@
+{
+  "dashboard": "Dashboard",
+  "soil_analysis": "Soil Analysis",
+  "crop_recommendation": "Crop Recommendation",
+  "disease_detection": "Disease Detection",
+  "weather": "Weather & Alerts",
+  "market_prices": "Market Prices",
+  "login": "Login",
+  "register": "Register",
+  "logout": "Logout",
+  "analyse": "Analyse Soil",
+  "detecting": "Detecting...",
+  "loading": "Loading..."
+}

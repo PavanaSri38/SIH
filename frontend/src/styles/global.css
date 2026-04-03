@@ -1,0 +1,19 @@
+:root {
+  --green: #2E7D32; --lt-green: #E8F4EC; --orange: #C45911;
+  --navy: #1F3864;  --blue: #2E74B5;     --lt-blue: #D6E4F7;
+  --white: #FFFFFF; --bg: #F8F9FA;       --text: #2D2D2D; --muted: #666666;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); }
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; border-radius: 6px; font-weight: 600; }
+.card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.btn-primary { background: var(--green); color: white; padding: 0.7rem 1.5rem; }
+.btn-primary:hover { background: #1B5E20; }
+.btn-orange { background: var(--orange); color: white; padding: 0.7rem 1.5rem; }
+input, select, textarea { width: 100%; padding: 0.7rem 1rem; border: 1.5px solid #ddd; border-radius: 8px; font-size: 0.95rem; }
+input:focus, select:focus { outline: none; border-color: var(--green); }
+.badge { display: inline-block; padding: 0.25rem 0.7rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+.badge-green  { background: var(--lt-green); color: var(--green); }
+.badge-orange { background: #FFF2CC; color: var(--orange); }
+.badge-blue   { background: var(--lt-blue); color: var(--blue); }

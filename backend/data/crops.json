@@ -1,0 +1,17 @@
+[
+  {"name":"Rice",      "suitable_soils":["Clay","Alluvial","Loamy"],      "states":["Andhra Pradesh","Telangana","West Bengal","Tamil Nadu"],"seasons":["Kharif"],"temp_min":20,"temp_max":35},
+  {"name":"Wheat",     "suitable_soils":["Loamy","Clay","Alluvial"],      "states":["Punjab","Haryana","Uttar Pradesh","Madhya Pradesh"],   "seasons":["Rabi"],  "temp_min":10,"temp_max":25},
+  {"name":"Cotton",    "suitable_soils":["Black","Red","Alluvial"],       "states":["Andhra Pradesh","Telangana","Gujarat","Maharashtra"],   "seasons":["Kharif"],"temp_min":21,"temp_max":37},
+  {"name":"Maize",     "suitable_soils":["Loamy","Sandy","Red"],          "states":["Karnataka","Andhra Pradesh","Rajasthan","Bihar"],       "seasons":["Kharif","Rabi"],"temp_min":18,"temp_max":35},
+  {"name":"Sugarcane", "suitable_soils":["Alluvial","Black","Loamy"],     "states":["Uttar Pradesh","Maharashtra","Karnataka","Tamil Nadu"], "seasons":["Summer"],"temp_min":20,"temp_max":35},
+  {"name":"Groundnut", "suitable_soils":["Sandy","Red","Loamy"],          "states":["Andhra Pradesh","Gujarat","Tamil Nadu","Karnataka"],    "seasons":["Kharif","Summer"],"temp_min":22,"temp_max":33},
+  {"name":"Soybean",   "suitable_soils":["Loamy","Black","Clay"],         "states":["Madhya Pradesh","Maharashtra","Rajasthan"],             "seasons":["Kharif"],"temp_min":20,"temp_max":30},
+  {"name":"Jowar",     "suitable_soils":["Black","Red","Loamy"],          "states":["Maharashtra","Karnataka","Andhra Pradesh","Telangana"],"seasons":["Kharif","Rabi"],"temp_min":26,"temp_max":36},
+  {"name":"Bajra",     "suitable_soils":["Sandy","Red","Loamy"],          "states":["Rajasthan","Haryana","Gujarat","Uttar Pradesh"],        "seasons":["Kharif","Summer"],"temp_min":25,"temp_max":38},
+  {"name":"Tomato",    "suitable_soils":["Loamy","Red","Sandy"],          "states":["Andhra Pradesh","Karnataka","Maharashtra","Telangana"], "seasons":["Rabi","Summer"],"temp_min":15,"temp_max":30},
+  {"name":"Onion",     "suitable_soils":["Loamy","Sandy","Alluvial"],     "states":["Maharashtra","Karnataka","Andhra Pradesh","Gujarat"],   "seasons":["Rabi","Summer"],"temp_min":13,"temp_max":30},
+  {"name":"Potato",    "suitable_soils":["Loamy","Sandy","Alluvial"],     "states":["Uttar Pradesh","West Bengal","Bihar","Punjab"],         "seasons":["Rabi"],  "temp_min":10,"temp_max":25},
+  {"name":"Mustard",   "suitable_soils":["Loamy","Alluvial","Sandy"],     "states":["Rajasthan","Uttar Pradesh","Haryana","Punjab"],         "seasons":["Rabi"],  "temp_min":10,"temp_max":22},
+  {"name":"Tur Dal",   "suitable_soils":["Black","Red","Loamy"],          "states":["Maharashtra","Karnataka","Andhra Pradesh","Gujarat"],   "seasons":["Kharif"],"temp_min":18,"temp_max":30},
+  {"name":"Chana",     "suitable_soils":["Loamy","Black","Clay"],         "states":["Madhya Pradesh","Rajasthan","Maharashtra","Uttar Pradesh"],"seasons":["Rabi"],"temp_min":10,"temp_max":25}
+]
